@@ -6,6 +6,8 @@
 <p align="center">
 <img height="300" src="https://github.com/mac999/thinking_machine/blob/main/object.png" />
 </p>
+
+
 ## Features
 
 - **Real-time Person Detection**: Uses YOLO v8 for accurate human detection via camera input
@@ -180,6 +182,7 @@ This project is developed for the AI x ART media exhibition 2025. Please contact
 **Taewook Kang**  
 Email: laputa99999@gmail.com  
 Project: Thinking Machine - AI Art Exhibition 2025
+
 
 
 
