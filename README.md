@@ -10,7 +10,7 @@
 
 ## Features
 
-- **Real-time Person Detection**: Uses YOLO v8 for accurate human detection via camera input
+- **Real-time Person Detection**: Uses YOLO for accurate human detection via camera input
 - **Dynamic Visual Effects**: Apple image with pulsing heartbeat animation triggered by human presence
 - **AI-Generated Philosophy**: Local LLM (Ollama + TinyLLama) creates philosophical maxims from observed objects
 - **Immersive Audio**: Synchronized heartbeat sound effects with volume optimization
@@ -182,6 +182,7 @@ This project is developed for the AI x ART media exhibition 2025. Please contact
 **Taewook Kang**  
 Email: laputa99999@gmail.com  
 Project: Thinking Machine - AI Art Exhibition 2025
+
 
 
 
