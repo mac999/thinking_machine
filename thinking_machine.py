@@ -419,7 +419,7 @@ while running:
 			# Start new LLM thread if none exists or previous one finished AND minimum 5 seconds have passed
 			current_time = time.time()
 			if ((llm_thread is None or not llm_thread.is_alive()) and 
-				(current_time - last_llm_start_time >= 5.0)):
+				(current_time - last_llm_start_time >= 20.0)):
 				
 				input_sentence = observed_text
 				title_text = observed_text.split(',')[0] if observed_text else ""
@@ -494,4 +494,5 @@ while running:
 heartbeat_audio.stop_heartbeat()
 cap.release()
 pygame.quit()
+
 sys.exit()
