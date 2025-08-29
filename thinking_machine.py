@@ -3,13 +3,14 @@
 # author: taewook kang
 # email: laputa99999@gmail.com
 # description: media art exhibition 2025. AI x ART.
-import pygame, math, sys, time, cv2, numpy as np, threading
+import pygame, math, sys, time, cv2, numpy as np, threading, random
 
 try:
 	import pyttsx3
 	from ultralytics import YOLO
 	from langchain_community.chat_models import ChatOllama
 	from langchain.schema import HumanMessage
+
 except ImportError as e:
 	print(f"Missing required library: {e}")
 	print("Please install: pip install ultralytics pyttsx3 langchain langchain-community opencv-python")
@@ -247,13 +248,20 @@ class PersonDetector:
 					class_detections[class_name]['confidence_sum'] += confidence
 			
 			# Generate observed_text in the requested format
-			observed_text_parts = []
-			for class_name, detection_info in class_detections.items():
-				count = detection_info['count']
-				avg_confidence = detection_info['confidence_sum'] / count
-				observed_text_parts.append(f"{class_name}({count}: {avg_confidence:.2f})")
-			
-			observed_text = ', '.join(observed_text_parts)
+			observed_text = ''
+			length = len(class_detections)
+			if length > 0:
+				observed_text_parts = []
+				for _ in range(5):
+					random_index = random.randint(0, length - 1)
+					class_name, detection_info = list(class_detections.items())[random_index]
+					if class_name in observed_text:
+						continue
+
+					count = detection_info['count']
+					avg_confidence = detection_info['confidence_sum'] / count
+					observed_text_parts.append(f"{class_name}({count}: {avg_confidence:.2f})")
+					observed_text = ', '.join(observed_text_parts)
 
 			# Calculate ratio of person area to total frame area
 			if count_person == 0 or total_frame_area == 0:
@@ -419,7 +427,7 @@ while running:
 			# Start new LLM thread if none exists or previous one finished AND minimum 5 seconds have passed
 			current_time = time.time()
 			if ((llm_thread is None or not llm_thread.is_alive()) and 
-				(current_time - last_llm_start_time >= 10.0)):
+				(current_time - last_llm_start_time >= 5.0)):
 				
 				input_sentence = observed_text
 				title_text = observed_text.split(',')[0] if observed_text else ""
@@ -494,6 +502,4 @@ while running:
 heartbeat_audio.stop_heartbeat()
 cap.release()
 pygame.quit()
-
 sys.exit()
-
