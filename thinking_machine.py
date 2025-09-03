@@ -3,18 +3,54 @@
 # author: taewook kang
 # email: laputa99999@gmail.com
 # description: media art exhibition 2025. AI x ART.
-import pygame, math, sys, time, cv2, numpy as np, threading, random
+import pygame, math, sys, time, cv2, numpy as np, threading, random, os, win32gui, win32con, subprocess, pyttsx3
+from ultralytics import YOLO
+from langchain_community.chat_models import ChatOllama
+from langchain.schema import HumanMessage
 
-try:
-	import pyttsx3
-	from ultralytics import YOLO
-	from langchain_community.chat_models import ChatOllama
-	from langchain.schema import HumanMessage
+def bring_window_to_front():
+	"""
+	Bring pygame window to front and give it focus
+	"""
+	
+	# Windows specific implementation
+	if os.name == 'nt':
+		try:
+			title = 'thinking_machine'
+			hwnd = win32gui.FindWindow(None, title)
+			if hwnd == 0:
+				print(f"Window '{title}' not found")
+				return
+			win32gui.ShowWindow(hwnd, win32con.SW_SHOWNOACTIVATE)
 
-except ImportError as e:
-	print(f"Missing required library: {e}")
-	print("Please install: pip install ultralytics pyttsx3 langchain langchain-community opencv-python")
-	exit(1)
+			# Bring window to front and give focus
+			win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+			win32gui.SetForegroundWindow(hwnd)
+			win32gui.SetActiveWindow(hwnd)
+			
+		except ImportError:
+			print("pywin32 not installed. Window focus may not work on Windows.")
+		except Exception as e:
+			print(f"Failed to bring window to front: {e}")
+	
+	# Linux/Unix specific implementation
+	elif os.name == 'posix':
+		try:
+			# Try to use wmctrl if available
+			subprocess.run(['wmctrl', '-a', 'Heartbeat Pulse Effect'], check=False)
+		except FileNotFoundError:
+			print("wmctrl not found. Window focus may not work on Linux.")
+		except Exception as e:
+			print(f"Failed to bring window to front: {e}")
+	
+	# macOS specific implementation
+	elif os.name == 'darwin':
+		try:
+			# Use AppleScript to bring window to front
+			subprocess.run(['osascript', '-e', 
+							'tell application "Python" to activate'], check=False)
+		except Exception as e:
+			print(f"Failed to bring window to front: {e}")
 
 # Check camera list
 def get_available_cameras():
@@ -338,8 +374,8 @@ def render_status_text(screen, text, font, color=(255, 255, 255)):
 pygame.init()
 
 # Set fullscreen mode (no window frame)
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-pygame.display.set_caption("Heartbeat Pulse Effect with Person Detection")
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN )
+pygame.display.set_caption("thinking_machine")
 clock = pygame.time.Clock()
 
 # Get actual fullscreen size
@@ -399,7 +435,7 @@ last_detection_time = 0
 
 # 6. Main loop
 title_text = ''
-smallfont = pygame.font.Font(None, 16) # 16-point font (redefined)
+smallfont = pygame.font.Font(None, 24) # 24-point font (redefined)
 running = True
 while running:
 	# 6-1. Event handling
@@ -417,7 +453,7 @@ while running:
 	if ret:
 		# Detect person and calculate area ratio
 		person_area_ratio, observed_text = person_detector.detect_person_objects(frame)
-		
+
 		# Activate heartbeat if person occupies more than threshold of screen
 		if person_area_ratio >= PERSON_AREA_THRESHOLD:
 			heartbeat_active = True
@@ -429,6 +465,8 @@ while running:
 			if ((llm_thread is None or not llm_thread.is_alive()) and 
 				(current_time - last_llm_start_time >= 5.0)):
 				
+				bring_window_to_front()
+			
 				input_sentence = observed_text
 				title_text = observed_text.split(',')[0] if observed_text else ""
 
