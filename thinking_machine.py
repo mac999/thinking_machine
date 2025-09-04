@@ -87,8 +87,8 @@ BLACK = (0, 0, 0)
 BLUE_TINT = (0, 0, 255, 50)  # Blue color and transparency
 RED_TINT = (255, 0, 0, 50)   # Red color and transparency
 IMAGE_PATH = 'apple.png'
-BEAT_SOUND_PATH = 'heartbeat.mp3'  # Heartbeat sound file
-HEARTBEAT_BPM = 40  # 72. Beats per minute
+BEAT_SOUND_PATH = 'heartbeat-01a.wav'  # Heartbeat sound file
+HEARTBEAT_BPM = 72  # 72. Beats per minute
 PULSE_DEPTH = 0.15  # Amplitude (up to 15% larger than base size)
 PERSON_AREA_THRESHOLD = 0.1  # Person must occupy 10% or more of screen to activate heartbeat
 
@@ -137,6 +137,7 @@ llm_thread = None
 llm_processor = None
 input_sentence = "I see you. Your heart is beating."
 last_llm_start_time = 0  # Track last LLM thread start time
+last_beat_start_time = 0  # Track last heartbeat sound play time
 
 def generate_llm_text():
 	"""Thread function to run LLM and update global variable with generated text"""
@@ -153,7 +154,7 @@ class HeartbeatAudio:
 	def __init__(self, sound_file: str):
 		try:
 			# Initialize pygame mixer - adjust settings for MP3 support
-			pygame.mixer.pre_init(frequency=22050, size=-16, channels=2, buffer=1024)
+			pygame.mixer.pre_init(frequency=48000, size=-16, channels=2, buffer=4096)
 			pygame.mixer.init()
 			
 			# Load sound file (MP3 support)
@@ -448,6 +449,7 @@ while running:
 
 	# 6-2. Read frame from camera
 	ret, frame = cap.read()
+	current_time = time.time()
 	observed_text = ''
 	heartbeat_active = False    
 	if ret:
@@ -461,7 +463,6 @@ while running:
 			print(f"Person detected: {person_area_ratio:.2%} of screen - Heartbeat ON")
 
 			# Start new LLM thread if none exists or previous one finished AND minimum 5 seconds have passed
-			current_time = time.time()
 			if ((llm_thread is None or not llm_thread.is_alive()) and 
 				(current_time - last_llm_start_time >= 5.0)):
 				
@@ -475,8 +476,12 @@ while running:
 				llm_thread = threading.Thread(target=generate_llm_text, daemon=True)
 				llm_thread.start()
 
-				# Play heartbeat sound (only when not already playing)
-				heartbeat_audio.play_heartbeat()
+	if (current_time - last_beat_start_time) > 60.0:
+		last_beat_start_time = current_time
+		if heartbeat_active:
+			bring_window_to_front()
+			# Play heartbeat sound (only when not already playing)
+			heartbeat_audio.play_heartbeat()
 
 	# 6-3. Animation logic (heartbeat-based scaling)
 	elapsed_time = time.time() - start_time
