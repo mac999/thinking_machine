@@ -518,10 +518,10 @@ while running:
 		screen.blit(scaled_blue_img, blue_rect)
 	else:
 		# Stop sound when heartbeat is deactivated
-		title_text = ''
+		# title_text = ''
 		LLM_text = ""
-		if heartbeat_audio.is_sound_playing():
-			heartbeat_audio.stop_heartbeat()
+		# if heartbeat_audio.is_sound_playing():
+		# 	heartbeat_audio.stop_heartbeat()
 
 	if len(LLM_text):
 		text_surface = font.render(LLM_text, True, (255, 255, 255))
@@ -545,4 +545,5 @@ while running:
 heartbeat_audio.stop_heartbeat()
 cap.release()
 pygame.quit()
+
 sys.exit()
