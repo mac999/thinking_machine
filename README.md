@@ -16,7 +16,7 @@
 - **Fullscreen Experience**: Borderless fullscreen display for exhibition environments
 
 In addition, the face detector and text to speech modules were appended like below. 
-- **Face detector**: Detect face components likes lip, eye etc.
+- **[Face detector](https://github.com/mac999/thinking_machine/blob/main/face_detector.py)**: Detect face components likes lip, eye etc.
 - **[Speech to text and text to speech](https://github.com/mac999/thinking_machine/blob/main/text_to_speech.py)**: Convert between text and speech.  
 
 ## Technical Architecture
@@ -185,6 +185,7 @@ This project is developed for the AI x ART media exhibition 2025. Please contact
 **Taewook Kang**  
 Email: laputa99999@gmail.com  
 Project: Thinking Machine - AI Art Exhibition 2025
+
 
 
 
