@@ -7,7 +7,6 @@
 <img height="300" src="https://github.com/mac999/thinking_machine/blob/main/object.png" />
 </p>
 
-
 ## Features
 
 - **Real-time Person Detection**: Uses YOLO for accurate human detection via camera input
@@ -15,6 +14,10 @@
 - **AI-Generated Philosophy**: Local LLM (Ollama + TinyLLama) creates philosophical maxims from observed objects
 - **Immersive Audio**: Synchronized heartbeat sound effects with volume optimization
 - **Fullscreen Experience**: Borderless fullscreen display for exhibition environments
+
+In addition, the face detector and text to speech modules were appended like below. 
+- **Face detector**: Detect face components likes lip, eye etc.
+- **Speech to text and text to speech**: Convert between text and speech.  
 
 ## Technical Architecture
 
@@ -182,6 +185,7 @@ This project is developed for the AI x ART media exhibition 2025. Please contact
 **Taewook Kang**  
 Email: laputa99999@gmail.com  
 Project: Thinking Machine - AI Art Exhibition 2025
+
 
 
 
